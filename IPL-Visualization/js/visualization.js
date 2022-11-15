@@ -1,3 +1,11 @@
+const LINE_CHART_WIDTH = 600;
+const LINE_CHART_HEIGHT = 300;
+const PADDING = {
+    LEFT: 80,
+    RIGHT:50,
+    TOP:50,
+    BOTTOM:50
+};
 class viz{
     constructor(matchData,perBallData){
         this.matchData = matchData;
@@ -6,7 +14,13 @@ class viz{
         console.log(this.teams);
         console.log(matchData);
         console.log(perBallData);
-        
+
+        let linesvg = d3.select(".content").append("svg").attr("width",LINE_CHART_WIDTH).attr("height",LINE_CHART_HEIGHT).attr("id","line-chart");
+        let x_axisg = linesvg.append("g").attr("id","x-axis");
+        let y_axisg = linesvg.append("g").attr("id","y-axis");
+        let linesg = linesvg.append("g").attr("id","lines");
+        let overlayg = linesvg.append("g").attr("id","overlay");
+        let overlayline = overlayg.append("line");
     }
     drawWormGraph(matchID){
         console.log(matchID);
@@ -40,15 +54,15 @@ class viz{
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
         let xscale = d3.scaleLinear()
                         .domain([0,max_balls])
-                        .range([0,svgwidth]);
+                        .range([PADDING.LEFT,LINE_CHART_WIDTH-PADDING.RIGHT]).nice();
         let yscale = d3.scaleLinear()
                         .domain([0,max_score])
-                        .range([svgheight,0]);
-                        console.log(yscale);
+                        .range([LINE_CHART_HEIGHT-PADDING.TOP,PADDING.BOTTOM]).nice();
+        //console.log(yscale);
         let lines = d3.select("#lines");
         let fun_x = function(d){
-            console.log(d);
-            console.log("x-axis : "+xscale(d['ball_number']));
+            //console.log(d);
+            //console.log("x-axis : "+xscale(d['ball_number']));
             return xscale(d['ball_number']);
         }
         let fun_y= function(d){
@@ -58,21 +72,66 @@ class viz{
         }
         //console.log(yscale(0));
         //console.log(yscale(130));
-        
+        const data = [first_innings,second_innings];
         let dline = d3.line()
                         .x(d=>fun_x(d))
                         .y(d=>fun_y(d));
-        lines.append('path')
-             .datum(first_innings)
-             .attr('fill','none')
-             .attr('stroke','black')
-             .attr("d",dline);
-        lines.append('path')
-             .datum(second_innings)
+        lines.selectAll('path')
+             .data(data)
+             .join('path')
              .attr('fill','none')
              .attr('stroke','black')
              .attr("d",dline);
         
-        
+        let xaxis = d3.axisBottom()
+                        .scale(xscale);
+        d3.select("#x-axis").attr("transform","translate(0,"+(LINE_CHART_HEIGHT-PADDING.BOTTOM)+")")
+                            .call(xaxis);
+        let yaxis = d3.axisLeft()
+                        .scale(yscale);
+        d3.select("#y-axis").attr("transform","translate("+PADDING.LEFT+",0)")
+                            .call(yaxis);
+        d3.select("#line-chart").on("mousemove",(event)=>{
+            if(d3.pointer(event)[0]>PADDING.LEFT && d3.pointer(event)[0]<LINE_CHART_WIDTH-PADDING.RIGHT){
+                d3.select("#overlay")
+                    .select("line")
+                    .attr("stroke","black")
+                    .attr('x1',d3.pointer(event)[0])
+                    .attr('x2',d3.pointer(event)[0])
+                    .attr('y1',LINE_CHART_HEIGHT-PADDING.TOP)
+                    .attr('y2',PADDING.BOTTOM);
+            
+                const ballno = Math.floor(xscale.invert(d3.pointer(event)[0]));
+                //console.log(Math.floor(ballno));
+                //ballno = Math.floor(ballno);
+                let arr = [];
+                for(let innings of data){
+                    console.log(innings);
+                    console.log(innings.filter((ball)=>{console.log(ball); return ball.ball_number === ballno}));
+                    arr.push(innings.filter((ball)=>ball.ball_number === ballno))
+                }
+                console.log(arr);
+                let overlaytext = function(d){
+                    console.log(d);
+                    console.log(Math.floor(d[0].ball_number/6));
+                    let overs = "";
+                    if(d[0].innings==="1"){
+                        console.log("first innings");
+                        overs =""+ (Math.floor(d[0].ball_number/6)) +"."+ (d[0].ball_number%6) + "overs \n";
+                    }
+                        
+                    overs = d[0].cumulativescore + " runs";
+                    return overs; 
+                }
+                d3.select("#overlay")
+                    .selectAll("text")
+                    .data(arr)
+                    .join("text")
+                    .text((d)=>overlaytext(d))
+                    .attr('x',d3.pointer(event)[0]>(LINE_CHART_WIDTH-d3.select("#overlay").node().getBoundingClientRect().width)?d3.pointer(event)[0]-d3.select("#overlay").node().getBoundingClientRect().width: d3.pointer(event)[0]+10)
+                    .attr('y',(d,i)=>20*i + PADDING.TOP)
+                    .attr('alignment-baseline','hanging');
+            }
+        })
     }
 }

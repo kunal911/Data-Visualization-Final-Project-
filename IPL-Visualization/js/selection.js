@@ -1,5 +1,6 @@
 class matchSelection{
     constructor(matchData,perBallData){
+        console.log(matchData);
         this.matchData = matchData;
         this.perBallData = perBallData;
         this.teams = matchData.map(d=>d.Team1);

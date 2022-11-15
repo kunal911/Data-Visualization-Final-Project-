@@ -39,7 +39,7 @@ var margin = {top: 50, right: 200, bottom: 100, left: 125};
     	.x(d => x(d.year))
     	.y(d => y(d.rank))
 
-    d3.csv("IPL_2008_2022_WINNINGS.csv", function(error, data) {
+    d3.csv("Data/IPL_2008_2022_WINNINGS.csv", function(error, data) {
       if (error) throw error;
       
       var parsedData = [];
