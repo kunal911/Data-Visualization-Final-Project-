@@ -1,3 +1,6 @@
+// This class returns the match id according to the teams selected in the dropdown menu.
+
+//call your function in the addListener function below.
 class matchSelection{
     constructor(matchData,perBallData){
         console.log(matchData);
@@ -44,7 +47,7 @@ class matchSelection{
             {
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
                 console.log(matchID);
-                that.visulization.drawWormGraph(matchID);
+                that.visulization.drawWormGraph(matchID);   //draws worm graph for the selected match
                 //console.log(matchID.ID)
             }
         });
