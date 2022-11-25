@@ -1,8 +1,8 @@
-const LINE_CHART_WIDTH = 600;
+const LINE_CHART_WIDTH = 500;
 const LINE_CHART_HEIGHT = 300;
 const PADDING = {
-    LEFT: 80,
-    RIGHT:50,
+    LEFT: 50,
+    RIGHT:30,
     TOP:50,
     BOTTOM:50
 };
@@ -21,6 +21,7 @@ class viz{
         let linesg = linesvg.append("g").attr("id","lines");
         let overlayg = linesvg.append("g").attr("id","overlay");
         let overlayline = overlayg.append("line");
+        let brushg = linesvg.append("g").attr("id","worm-brush");
     }
     drawWormGraph(matchID){
         console.log(matchID);
@@ -48,8 +49,8 @@ class viz{
             ball_number += 1;
             d['ball_number'] = ball_number;
         });
-        console.log(first_innings);
-        console.log(second_innings);
+        //console.log(first_innings);
+        //console.log(second_innings);
         let max_balls = Math.max(first_innings[first_innings.length-1].ball_number,second_innings[second_innings.length-1].ball_number);
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
         let xscale = d3.scaleLinear()
@@ -91,6 +92,8 @@ class viz{
                         .scale(yscale);
         d3.select("#y-axis").attr("transform","translate("+PADDING.LEFT+",0)")
                             .call(yaxis);
+        
+        // Sliding bar on the graph
         d3.select("#line-chart").on("mousemove",(event)=>{
             if(d3.pointer(event)[0]>PADDING.LEFT && d3.pointer(event)[0]<LINE_CHART_WIDTH-PADDING.RIGHT){
                 d3.select("#overlay")
@@ -104,23 +107,36 @@ class viz{
                 const ballno = Math.floor(xscale.invert(d3.pointer(event)[0]));
                 //console.log(Math.floor(ballno));
                 //ballno = Math.floor(ballno);
-                let arr = [];
+                let arr = [[{"text":"overs"}]];
                 for(let innings of data){
-                    console.log(innings);
-                    console.log(innings.filter((ball)=>{console.log(ball); return ball.ball_number === ballno}));
-                    arr.push(innings.filter((ball)=>ball.ball_number === ballno))
+                    //console.log(innings);
+                    //console.log(innings.filter((ball)=>{console.log(ball); return ball.ball_number === ballno}));
+                    let filtered = innings.filter((ball)=>ball.ball_number === ballno);
+                    if(filtered.length!==0){
+                        arr.push(filtered);
+                        console.log(arr[0][0]);
+                        arr[0][0]["overs"] = filtered[0]["overs"];
+                        arr[0][0]['balls'] = filtered[0]["ballnumber"];
+                    }
                 }
                 console.log(arr);
                 let overlaytext = function(d){
                     console.log(d);
-                    console.log(Math.floor(d[0].ball_number/6));
+                    //console.log(Math.floor(d[0].ball_number/6));
                     let overs = "";
-                    if(d[0].innings==="1"){
-                        console.log("first innings");
-                        overs =""+ (Math.floor(d[0].ball_number/6)) +"."+ (d[0].ball_number%6) + "overs \n";
+                    // if(d[0].innings==="1"){
+                    //     console.log("first innings");
+                    //     overs = d[0].overs+"."+d[0].ballnumber+"\n";
+                    //     console.log(overs);
+                    // }
+                    if(d[0]["text"] === "overs"){
+                        console.log(d[0]);
+                        overs = "Overs: "+d[0].overs+"."+d[0].balls;
+                        console.log(overs);
+                        return overs;
                     }
-                        
-                    overs = d[0].cumulativescore + " runs";
+                    overs += d[0].cumulativescore + " runs";
+                    //console.log(overs);
                     return overs; 
                 }
                 d3.select("#overlay")
@@ -133,5 +149,30 @@ class viz{
                     .attr('alignment-baseline','hanging');
             }
         })
+
+        // Brush on the worm graph
+        const that = this;
+        let brush = d3.brushX()
+                        .extent([[PADDING.LEFT,LINE_CHART_HEIGHT-PADDING.BOTTOM],[LINE_CHART_WIDTH-PADDING.RIGHT,LINE_CHART_HEIGHT-20]])
+                        .on("brush",function(e){
+                            console.log("brush");
+                            console.log(e.selection);
+                            if(e.selection){
+                                const [left,right] = e.selection;
+                                console.log(xscale.invert(left));
+                                console.log(xscale.invert(right));
+                            }
+                        })
+                        .on("end",function(e){
+                            console.log("end");
+                            console.log(e.selection);
+                            if(e.selection){
+                                const [left,right] = e.selection;
+                                console.log(xscale.invert(left));
+                                console.log(xscale.invert(right));
+                            }
+                        })
+        d3.select("#worm-brush").call(brush);
+        d3.select("#lines").raise();
     }
 }
