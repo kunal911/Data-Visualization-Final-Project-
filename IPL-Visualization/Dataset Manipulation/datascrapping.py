@@ -50,4 +50,43 @@ for count in range(len_url):
         updated_data = updated_data.append(match_frame)
         dataframe = pd.DataFrame()
 print(updated_data)
+
+balling_lengths = ["Full Toss","Yorker","Full Length","full","fuller","Good Length","length","short","good length"]
+lengths = []
+for i in range(len(balls)):
+    #print(ball['text'].iloc[i]))
+    success = 0
+    print(i)
+    for j in balling_lengths:
+        print(j)
+        text = balls['text'].iloc[i]
+        if isinstance(text,float) is False:
+            if j in balls['text'].iloc[i]:
+                print("Success")
+                lengths.append(j)
+                success = 1
+                break
+    if success != 1:
+        lengths.append(np.nan)
+length = pd.Series(lengths)
+balls['bowling_length'] = length.fillna(method='bfill')
+
+batting_shots = ["cover","point","punch","punches","third","fine leg","leg","square","square leg","mid wicket","midwicket","hook","pull","mid on","mid-on","mid-off","mid off","long-on","long-off","fine","edge","straight","sweep","down the ground","over the bowler's head","upper-cut"]
+shots = []
+for i in range(len(balls)):
+    success = 0
+    print(i)
+    for j in batting_shots:
+        print(j)
+        text = balls['text'].iloc[i]
+        if isinstance(text,float) is False:
+            if j in balls['text'].iloc[i]:
+                print("Success")
+                shots.append(j)
+                success = 1
+                break
+    if success != 1:
+        shots.append(np.nan)
+shot = pd.Series(shots)
+ball['batting_shot'] = shot.fillna(method='bfill')
 updated_data.to_csv("IPL_Ball_by_Ball_2022.csv")

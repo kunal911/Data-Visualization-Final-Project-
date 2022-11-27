@@ -24,11 +24,15 @@ class matchSelection{
         }
         this.addListener();
         this.visulization = new viz(this.matchData,this.perBallData);
-
+        this.teamsheet = new teamsheets(this.matchData);
     }
     getMatchID(team1,team2){
-        let matches = this.matchData.filter(d=>(d.Team1 === team1 || d.Team1 ===team2) && (d.Team2 ===team2 || d.Team2 === team1))
-        //console.log(matches)    
+        let matches = this.matchData.filter(d=>(d.Team1 === team1 && d.Team2 ===team2)) 
+        if (matches.length===0){
+            matches = this.matchData.filter(d=>(d.Team1 === team2 && d.Team2 === team1));
+        } 
+        // && (d.Team2 ===team2 || d.Team2 === team1)
+        console.log(matches)    
         return matches[0].ID;
     }
     addListener(){
@@ -37,8 +41,13 @@ class matchSelection{
             console.log(that.dropdown.value);
             if(that.dropdown.value !== "Select Team 1" && that.dropdown2.value!=="Select Team 2")
             {
+                console.log(that.dropdown.value);
+                console.log(that.dropdown2.value);
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
                 console.log(matchID);
+                that.teamsheet.drawTable(matchID,"team1");
+                that.visulization.drawWormGraph(matchID);
+                that.teamsheet.drawTable(matchID,"team2");
             }
         });
         this.dropdown2.addEventListener("change",function(){
@@ -47,7 +56,9 @@ class matchSelection{
             {
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
                 console.log(matchID);
+                that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);   //draws worm graph for the selected match
+                that.teamsheet.drawTable(matchID,"team2");
                 //console.log(matchID.ID)
             }
         });
