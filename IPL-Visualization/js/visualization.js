@@ -31,8 +31,7 @@ class viz{
         d3.select(".content").append("svg").attr("class","team2").attr("width",TEAM_WIDTH).attr("height",TEAM_HEIGHT);
         d3.select(".team2").append("g").attr("class","team-name");
         d3.select(".team2").append("g").attr("class","player-name");
-
-        
+        this.piechart_obj = new piechart();
     //console.log(COLOR_PALLETE["Sunrisers Hyderabad"]);
     }
     drawWormGraph(matchID){
@@ -76,7 +75,7 @@ class viz{
         "Rajasthan Royals":["RR"],
         "Sunrisers Hyderabad":["SRH"]
         };
-        //console.log(first_innings);
+        console.log(first_innings);
         first_innings.map(d=>{
             //console.log(d);
             if(d.extra_type === "wides" || d.extra_type === "noballs"){
@@ -119,9 +118,11 @@ class viz{
                 secondinnings_deliveries.push(d);
             }
         });
-        console.log(wicket_deliveries);
-        console.log(firstinnings_deliveries);
-        console.log(secondinnings_deliveries);
+        // console.log(wicket_deliveries);
+        // console.log(firstinnings_deliveries);
+        // console.log(secondinnings_deliveries);
+        console.log(this);
+        this.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries);
         let max_balls = Math.max(firstinnings_deliveries[firstinnings_deliveries.length-1].ball_number,secondinnings_deliveries[secondinnings_deliveries.length-1].ball_number);
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
         let xscale = d3.scaleLinear()
@@ -245,11 +246,12 @@ class viz{
                         .extent([[PADDING.LEFT,LINE_CHART_HEIGHT-PADDING.BOTTOM],[LINE_CHART_WIDTH-PADDING.RIGHT,LINE_CHART_HEIGHT-20]])
                         .on("brush",function(e){
                             //console.log("brush");
-                            //console.log(e.selection);
+                            console.log(e.selection);
                             if(e.selection){
                                 const [left,right] = e.selection;
-                                console.log(xscale.invert(left));
-                                console.log(xscale.invert(right));
+                                let from = Math.floor(xscale.invert(left));
+                                let to = Math.floor(xscale.invert(right));
+                                that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                             }
                         })
                         .on("end",function(e){
@@ -257,8 +259,9 @@ class viz{
                             console.log(e.selection);
                             if(e.selection){
                                 const [left,right] = e.selection;
-                                console.log(xscale.invert(left));
-                                console.log(xscale.invert(right));
+                                let from = Math.floor(xscale.invert(left));
+                                let to = Math.floor(xscale.invert(right));
+                                that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                             }
                         })
         d3.select("#worm-brush").call(brush);
