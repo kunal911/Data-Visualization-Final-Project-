@@ -42,13 +42,15 @@ class teamsheets{
                                                 .join("text")
                                                 .text(d=>d)
                                                 .attr('x',5)
-                                                .attr('y',row_height);
+                                                .attr('y',row_height)
+                                                .style("font-weight","bold");
         d3.select("."+team).select(".player-name").selectAll("text")
                     .data(players)
                     .join("text")
                     .text(d=>d)
                     .attr('x',5)
-                    .attr('y',(d,i)=>row_height*(i+2));
+                    .attr('y',(d,i)=>row_height*(i+2))
+                    .style("text-align","center");
 
     }
 }

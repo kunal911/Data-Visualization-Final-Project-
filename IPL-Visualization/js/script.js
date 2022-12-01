@@ -10,11 +10,8 @@ async function loadData(){
 // Call your function here
 loadData().then(loadedData=>{
     console.log("Data Imported");
-    //console.log(loadedData);
     const perBallData = loadedData.perBallData;
     const matchData = loadedData.matchData;
-    //console.log(perBallData);
-    //console.log(matchData);
     header = new matchSelection(matchData,perBallData);
-    //visualization = new viz(matchData,perBallData);
+
 });

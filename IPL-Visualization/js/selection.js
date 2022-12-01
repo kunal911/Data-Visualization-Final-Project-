@@ -25,6 +25,7 @@ class matchSelection{
         this.addListener();
         this.visulization = new viz(this.matchData,this.perBallData);
         this.teamsheet = new teamsheets(this.matchData);
+        
     }
     getMatchID(team1,team2){
         let matches = this.matchData.filter(d=>(d.Team1 === team1 && d.Team2 ===team2)) 
@@ -45,6 +46,7 @@ class matchSelection{
                 console.log(that.dropdown2.value);
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
                 console.log(matchID);
+                //that.header.createHeader(matchID);
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);
                 that.teamsheet.drawTable(matchID,"team2");
@@ -56,6 +58,7 @@ class matchSelection{
             {
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
                 console.log(matchID);
+                //that.header.createHeader(matchID);
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);   //draws worm graph for the selected match
                 that.teamsheet.drawTable(matchID,"team2");
