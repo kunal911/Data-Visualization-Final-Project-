@@ -6,7 +6,7 @@ class teamsheets{
     }
     drawTable(matchID,team){
         let matchDetails = this.matchData.filter(d=>d.ID === matchID);
-        console.log(matchDetails);
+        //console.log(matchDetails);
         let players =[] ;
         let teamname = [];
         if(team === "team1"){
@@ -20,7 +20,7 @@ class teamsheets{
                     players.push(player_name[i].slice(2,player_name[i].length-1));
                 }
             }
-            console.log(players);
+           // console.log(players);
         }
         else{
             let player_name = matchDetails[0].Team2Players.split(",");

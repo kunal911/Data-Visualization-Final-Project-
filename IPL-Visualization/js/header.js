@@ -11,20 +11,23 @@ class header{
         // console.log(firstinnings);
         // console.log(secondinnings);
         // console.log(firstinnings[firstinnings.length -1].cumulativescore);
+        //console.log(firstinnings);
+        //console.log(secondinnings);
+        //console.log(firstinnings[firstinnings.length -1].cumulativescore);
         let team1_score = firstinnings[firstinnings.length -1].cumulativescore;
         let team2_score = secondinnings[secondinnings.length -1].cumulativescore;
         let team1_wickets = firstinnings[firstinnings.length -1].total_wickets;
         let team2_wickets = secondinnings[secondinnings.length -1].total_wickets;
         let matchgroup = d3.group(this.matchData,d=>d.ID)
         let match = matchgroup.get(matchID);
-        console.log(match);
+        //console.log(match);
         let obj = {"date":{"d":match[0].Date,"venue":match[0].Venue},
                     "teams":{"team1":match[0].Team1,"team2":match[0].Team2,"t1_run":team1_score,"t2_run":team2_score,"t1_wickets":team1_wickets,"t2_wickets":team2_wickets},
                     //"scores":{"t1_run":team1_score,"t2_run":team2_score,"t1_wickets":team1_wickets,"t2_wickets":team2_wickets},
                     "result":{"winning_team":match[0].WinningTeam,"wonby":match[0].WonBy,"margin":match[0].Margin}
                 }
-        console.log(obj);
-        console.log(Object.entries(obj));
+        //console.log(obj);
+        //console.log(Object.entries(obj));
         d3.select("#header").selectAll(".header-g-data")
                                 .data(Object.entries(obj))
                                 .join("g")

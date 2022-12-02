@@ -36,6 +36,7 @@ class viz{
         this.piechart_obj = new piechart();
         this.heatmap_obj = new heatmap();
         this.partnership_obj = new partnership(this.matchData,this.perBallData);
+        this.runperover_obj = new runperover();
     //console.log(COLOR_PALLETE["Sunrisers Hyderabad"]);
     }
     drawWormGraph(matchID){
@@ -112,15 +113,24 @@ class viz{
             }
         });
         ball_number = 0;
+        let extras_2 = 0;
         second_innings.map(d=>{
             if(d.extra_type === "wides" || d.extra_type === "noballs"){
                 totalruns_2 += Number(d.total_run);
                 d['cumulativescore'] = totalruns_2;
                 //ball_number += 1;
                 d['ball_number'] = ball_number;
-                secondinnings_deliveries[secondinnings_deliveries.length-1].cumulativescore += Number(d.total_run)
+                if(secondinnings_deliveries.length === 0){
+                    extras_2 = Number(d.total_run);
+                }
+                else
+                    secondinnings_deliveries[secondinnings_deliveries.length-1].cumulativescore += Number(d.total_run)
             }
             else{
+                if(extras_2 !== 0){
+                    totalruns_2 += Number(d.total_run)+extras_2;
+                    extras_2 = 0;
+                }
                 totalruns_2 += Number(d.total_run);
                 d['cumulativescore'] = totalruns_2;
                 ball_number += 1;
@@ -143,6 +153,7 @@ class viz{
         this.partnership_obj.drawTable(first_innings,"first");
         this.partnership_obj.drawTable(second_innings,"second");
         this.header.drawHeader(firstinnings_deliveries,secondinnings_deliveries,matchID);
+        this.runperover_obj.draw_rpo(firstinnings_deliveries,secondinnings_deliveries);
         let max_balls = Math.max(firstinnings_deliveries[firstinnings_deliveries.length-1].ball_number,secondinnings_deliveries[secondinnings_deliveries.length-1].ball_number);
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
         //console.log(max_balls);
