@@ -8,9 +8,9 @@ class header{
         this.headersvg = d3.select(".content").select(".header-div").append("svg").attr("id","header").attr("width",HEADER_SVGWIDTH).attr("height",HEADER_SVGHEIGHT);
     }
     drawHeader(firstinnings,secondinnings,matchID){
-        console.log(firstinnings);
-        console.log(secondinnings);
-        console.log(firstinnings[firstinnings.length -1].cumulativescore);
+        // console.log(firstinnings);
+        // console.log(secondinnings);
+        // console.log(firstinnings[firstinnings.length -1].cumulativescore);
         let team1_score = firstinnings[firstinnings.length -1].cumulativescore;
         let team2_score = secondinnings[secondinnings.length -1].cumulativescore;
         let team1_wickets = firstinnings[firstinnings.length -1].total_wickets;
@@ -35,7 +35,7 @@ class header{
                                     else if(d[0]==="teams")
                                         return "translate(400,38)"
                                     else    
-                                        return "translate(530,75)"
+                                        return "translate(550,75)"
                                 })
         
         d3.selectAll(".header-g-data").filter(d=>d[0]==="date")

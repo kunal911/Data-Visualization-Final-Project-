@@ -9,7 +9,6 @@ class teamsheets{
         console.log(matchDetails);
         let players =[] ;
         let teamname = [];
-        //let teamsvg = d3.select(".content").append("svg").attr("class",team).attr("width",TEAM_WIDTH).attr("height",TEAM_HEIGHT);
         if(team === "team1"){
             let player_name = matchDetails[0].Team1Players.split(",");
             teamname.push(matchDetails[0].Team1);
@@ -36,7 +35,6 @@ class teamsheets{
             }
         }
         let row_height = TEAM_HEIGHT/(players.length+2);
-        // console.log(players);
         d3.select("."+team).select(".team-name").selectAll("text")
                                                 .data(teamname)
                                                 .join("text")

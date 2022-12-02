@@ -188,7 +188,7 @@ class piechart{
         let data = anglegenerator(runsdata);
         //console.log(data);
         let arcgenerator = d3.arc().innerRadius(0).outerRadius(PIECHART_RADIUS);
-        d3.select("#pie-chart").select("text").text("Wagon Wheel").attr('x',PIECHART_SVGWIDTH/2-40).attr('y',30).style("font-weight","bold");
+        d3.select("#pie-chart").select("text").text("Wagon Wheel of Best Performers").attr('x',PIECHART_SVGWIDTH/2-100).attr('y',30).style("font-weight","bold");
         d3.select("#pie-chart").select(".innings1-piechart").selectAll("path")
                                                     .data(data)
                                                     .join("path")

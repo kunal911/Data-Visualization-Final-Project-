@@ -57,13 +57,13 @@ class viz{
         let wicket_deliveries = [];
         let firstinnings_deliveries = [];
         let secondinnings_deliveries = [];
-        let COLOR_PALLETE = {"Delhi Capitals": "#17479E",
+        let COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
         "Kolkata Knight Riders":"#552792",
         "Mumbai Indians":"#003B7A",
         "Royal Challengers Bangalore":"#8c0b01",
         "Chennai Super Kings":"#f2a619",
-        "Gujarat Titans":"#0B4973",
-        "Lucknow Super Giants":"#FFCC00",
+        "Gujarat Titans":"#ADD8E6",
+        "Lucknow Super Giants":"#81BC00",
         "Punjab Kings" :"#84171B",
         "Rajasthan Royals":"#EA1A85",
         "Sunrisers Hyderabad":"#ED1A37"

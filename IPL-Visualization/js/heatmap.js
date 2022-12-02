@@ -140,7 +140,7 @@ class heatmap{
         
         let wicket_deliveries = data.filter(d=>d.wicket>0);
        // console.log(wicket_deliveries);
-        d3.select("#heatmap").select("text").text("Bowling Performance").attr('x',HEATMAP_WIDTHSVG/2-50).attr('y',30).style("font-weight","bold");
+        d3.select("#heatmap").select("text").text("Best Bowling Performance of each innings").attr('x',HEATMAP_WIDTHSVG/2-100).attr('y',30).style("font-weight","bold");
         
         //let innings2 = {"i":"Second Innings","name":highest_scorer_2,"data":{"score":score_2,"balls":balls_faced_2}}
         if(innings ==="first"){
