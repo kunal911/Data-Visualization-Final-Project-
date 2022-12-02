@@ -4,7 +4,7 @@ const cellwidth = {
     "right":160
 }
 const Partnership_SVGWidth = 1300;
-const Partnership_SVGHeight = 800;
+const Partnership_SVGHeight = 500;
 const startpositions = {
     0:0,
     1:160,
@@ -19,9 +19,9 @@ class partnership{
         this.tablesvg.append("text").attr("id","partnership-label");
         this.tablesvg.append("text").attr("id","first-innings");
         this.tablesvg.append("text").attr("id","second-innings");
-        this.tableg = this.tablesvg.append("g").attr("class","table-group").attr("transform","translate(45,30)");
+        this.tableg = this.tablesvg.append("g").attr("class","table-group").attr("transform","translate(45,22)");
     
-        this.tableg_2 = this.tablesvg.append("g").attr("class","table-group-i2").attr("transform","translate(700,30)");
+        this.tableg_2 = this.tablesvg.append("g").attr("class","table-group-i2").attr("transform","translate(700,22)");
 
     }
     drawTable(first_innings,innings,from=0,to=120){
@@ -100,8 +100,8 @@ class partnership{
             partnership_details.push(obj);
         }
 
-        console.log(partnership_details);
-        console.log(max_runs);
+        //console.log(partnership_details);
+        //console.log(max_runs);
         let row_height = 40;
         let rows;
         d3.select("#partnership-label").text("Partnership").attr('x',Partnership_SVGWidth/2-50).attr('y',11).style("font-weight","bold");
@@ -148,7 +148,7 @@ class partnership{
             let xscale = d3.scaleLinear()
                         .domain([0,max_runs])
                         .range([0,145]);
-            console.log(d3.selectAll(".table-cells").filter(d=>d[0]==="partnership"));
+            //console.log(d3.selectAll(".table-cells").filter(d=>d[0]==="partnership"));
             let partnership_group = table_cells.filter(d=>d[0]==="partnership")
                 .selectAll("g")
                 .data(d=>Object.entries(d[1]))
@@ -174,7 +174,7 @@ class partnership{
                     .selectAll("rect")
                     .data(d=>[d])
                     .join("rect")
-                    .attr('x',d=>{console.log(d); return 145-xscale(d[1]);})
+                    .attr('x',d=>{return 145-xscale(d[1]);})
                     .attr('y',0)
                     .attr("width",d=>xscale(d[1]))
                     .attr("height",10)
