@@ -4,7 +4,7 @@ const cellwidth = {
     "right":160
 }
 const Partnership_SVGWidth = 1600;
-const Partnership_SVGHeight = 800;
+const Partnership_SVGHeight = 500;
 const startpositions = {
     0:0,
     1:160,
