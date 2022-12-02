@@ -3,13 +3,24 @@ const cellwidth = {
     "middle":300,
     "right":160
 }
-const Partnership_SVGWidth = 1300;
+const Partnership_SVGWidth = 1600;
 const Partnership_SVGHeight = 800;
 const startpositions = {
     0:0,
     1:160,
     2:460
 }
+let COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
+"Kolkata Knight Riders":"#552792",
+"Mumbai Indians":"#003B7A",
+"Royal Challengers Bangalore":"#8c0b01",
+"Chennai Super Kings":"#f2a619",
+"Gujarat Titans":"#ADD8E6",
+"Lucknow Super Giants":"#81BC00",
+"Punjab Kings" :"#84171B",
+"Rajasthan Royals":"#EA1A85",
+"Sunrisers Hyderabad":"#ED1A37"
+};
 class partnership{
     constructor(matchData,ballbyball){
         this.matchData = matchData;
@@ -104,7 +115,7 @@ class partnership{
         console.log(max_runs);
         let row_height = 40;
         let rows;
-        d3.select("#partnership-label").text("Partnership").attr('x',Partnership_SVGWidth/2-50).attr('y',11).style("font-weight","bold");
+        d3.select("#partnership-label").text("Partnership").attr('x',Partnership_SVGWidth/2-150).attr('y',11).style("font-weight","bold");
         d3.select("#first-innings").text("First Innings").attr('x',310).attr('y',30).style("font-weight","bold");
         d3.select("#second-innings").text("Second Innings").attr('x',930).attr('y',30).style("font-weight","bold");
         if(innings==="first"){
@@ -178,7 +189,7 @@ class partnership{
                     .attr('y',0)
                     .attr("width",d=>xscale(d[1]))
                     .attr("height",10)
-                    .attr("fill","red");
+                    .attr("fill","red")
                 partnership_group.filter(d=>d[0]==="batter2_contri")
                     .selectAll("rect")
                     .data(d=>[d])
