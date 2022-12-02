@@ -14,29 +14,21 @@ class partnership{
     constructor(matchData,ballbyball){
         this.matchData = matchData;
         this.ballbyball = ballbyball;
-        //this.cellwidth = [,150,550];
-        //d3.select(".content").append("svg").attr("width",HEADER_SVGWIDTH).attr("height",HEADER_SVGHEIGHT);
+    
         this.tablesvg = d3.select(".content").append("svg").attr("id","partnership").attr("width",Partnership_SVGWidth).attr("height",Partnership_SVGHeight);
         this.tablesvg.append("text").attr("id","partnership-label");
         this.tablesvg.append("text").attr("id","first-innings");
         this.tablesvg.append("text").attr("id","second-innings");
         this.tableg = this.tablesvg.append("g").attr("class","table-group").attr("transform","translate(45,30)");
-        //this.tablesvg = d3.select(".content").append("svg").attr("id","partnership").attr("width",670).attr("height",800);
+    
         this.tableg_2 = this.tablesvg.append("g").attr("class","table-group-i2").attr("transform","translate(700,30)");
 
     }
     drawTable(first_innings,innings,from=0,to=120){
-        // let matches = d3.group(this.matchData,(d)=>d.ID);
-        // let match = matches.get(matchID);
-        // let groupbyID = d3.group(this.ballbyball,d=>d.ID);
-        // let matchDetails = groupbyID.get(matchID);
-        // let innings_group = d3.group(matchDetails,d=>d.innings);
-        // let first_innings = innings_group.get("1");
-        // let second_innings = innings_group.get("2");
+        
         let last_element = first_innings.length-1
         let last_ball = first_innings[last_element];
-        // console.log(last_ball)
-        // console.log(first_innings[first_innings.length-1].cumulativescore)
+        
         let partnership_details = [];
         let obj = {};
         let max_runs = 0;
