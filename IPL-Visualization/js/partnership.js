@@ -1,22 +1,38 @@
-
+const cellwidth = {
+    "left":160,
+    "middle":300,
+    "right":160
+}
+const Partnership_SVGWidth = 1300;
+const Partnership_SVGHeight = 800;
+const startpositions = {
+    0:0,
+    1:160,
+    2:460
+}
 class partnership{
     constructor(matchData,ballbyball){
         this.matchData = matchData;
         this.ballbyball = ballbyball;
-        this.cellwidth = [0,150,550];
+        //this.cellwidth = [,150,550];
         //d3.select(".content").append("svg").attr("width",HEADER_SVGWIDTH).attr("height",HEADER_SVGHEIGHT);
-        this.tablesvg = d3.select(".content").append("svg").attr("id","partnership").attr("width",700).attr("height",800);
-        this.tableg = this.tablesvg.append("g").attr("class","table-group");
+        this.tablesvg = d3.select(".content").append("svg").attr("id","partnership").attr("width",Partnership_SVGWidth).attr("height",Partnership_SVGHeight);
+        this.tablesvg.append("text").attr("id","partnership-label");
+        this.tablesvg.append("text").attr("id","first-innings");
+        this.tablesvg.append("text").attr("id","second-innings");
+        this.tableg = this.tablesvg.append("g").attr("class","table-group").attr("transform","translate(45,30)");
+        //this.tablesvg = d3.select(".content").append("svg").attr("id","partnership").attr("width",670).attr("height",800);
+        this.tableg_2 = this.tablesvg.append("g").attr("class","table-group-i2").attr("transform","translate(700,30)");
 
     }
-    drawTable(matchID,from=0,to=120){
-        let matches = d3.group(this.matchData,(d)=>d.ID);
-        let match = matches.get(matchID);
-        let groupbyID = d3.group(this.ballbyball,d=>d.ID);
-        let matchDetails = groupbyID.get(matchID);
-        let innings_group = d3.group(matchDetails,d=>d.innings);
-        let first_innings = innings_group.get("1");
-        let second_innings = innings_group.get("2");
+    drawTable(first_innings,innings,from=0,to=120){
+        // let matches = d3.group(this.matchData,(d)=>d.ID);
+        // let match = matches.get(matchID);
+        // let groupbyID = d3.group(this.ballbyball,d=>d.ID);
+        // let matchDetails = groupbyID.get(matchID);
+        // let innings_group = d3.group(matchDetails,d=>d.innings);
+        // let first_innings = innings_group.get("1");
+        // let second_innings = innings_group.get("2");
         let last_element = first_innings.length-1
         let last_ball = first_innings[last_element];
         // console.log(last_ball)
@@ -95,74 +111,91 @@ class partnership{
         console.log(partnership_details);
         console.log(max_runs);
         let row_height = 40;
-        let rows = this.tableg.selectAll(".table-row")
-                                .data(partnership_details)
-                                .join("g")
-                                .classed("table-row",true)
-                                .attr("transform",(d,i)=>"translate(0,"+((i+1)*row_height)+")");
-        
-        let table_cells = rows.selectAll(".table-cells")
-                                .data(d=>Object.entries(d))
-                                .join("g")
-                                .classed("table-cells",true)
-                                .attr("transform",(d,i)=>"translate("+(this.cellwidth[i])+",0)");
-        
-        d3.selectAll(".table-cells").filter(d=>d[0]==="batter1")
-                                    .selectAll("text")
-                                    .data(d=>[d])
-                                    .join("text")
-                                    .text(d=>d[1].name+" \n "+d[1].batter1_runs + "("+d[1].batter1_balls+")");
-        
-        d3.selectAll(".table-cells").filter(d=>d[0]==="batter2")
-                                    .selectAll("text")
-                                    .data(d=>[d])
-                                    .join("text")
-                                    .text(d=>d[1].name+" \n "+d[1].batter2_runs + "("+d[1].batter2_balls+")");
-        
-        //let batter1_max = 
-        let xscale = d3.scaleLinear()
+        let rows;
+        d3.select("#partnership-label").text("Partnership").attr('x',Partnership_SVGWidth/2-50).attr('y',11).style("font-weight","bold");
+        d3.select("#first-innings").text("First Innings").attr('x',310).attr('y',30).style("font-weight","bold");
+        d3.select("#second-innings").text("Second Innings").attr('x',930).attr('y',30).style("font-weight","bold");
+        if(innings==="first"){
+            rows = this.tableg.selectAll(".table-row")
+            .data(partnership_details)
+            .join("g")
+            .classed("table-row",true)
+            .attr("transform",(d,i)=>"translate(0,"+((i+1)*row_height)+")");
+        }
+        else{
+            rows = this.tableg_2.selectAll(".table-row")
+            .data(partnership_details)
+            .join("g")
+            .classed("table-row",true)
+            .attr("transform",(d,i)=>"translate(0,"+((i+1)*row_height)+")");
+        }
+            let table_cells = rows.selectAll(".table-cells")
+            .data(d=>Object.entries(d))
+            .join("g")
+            .classed("table-cells",true)
+            .attr("transform",(d,i)=>{
+                if(i===0)
+                    return "translate("+(startpositions[i])+",5)"
+                else if(i===2)
+                    return "translate("+(startpositions[i])+",5)"
+                return "translate("+(startpositions[i])+",0)";
+            });
+
+            table_cells.filter(d=>d[0]==="batter1")
+                .selectAll("text")
+                .data(d=>[d])
+                .join("text")
+                .text(d=>d[1].name+" \n "+d[1].batter1_runs + "("+d[1].batter1_balls+")");
+
+            table_cells.filter(d=>d[0]==="batter2")
+                .selectAll("text")
+                .data(d=>[d])
+                .join("text")
+                .text(d=>d[1].name+" \n "+d[1].batter2_runs + "("+d[1].batter2_balls+")");
+ 
+            let xscale = d3.scaleLinear()
                         .domain([0,max_runs])
-                        .range([0,200]);
-        console.log(d3.selectAll(".table-cells").filter(d=>d[0]==="partnership"));
-        d3.selectAll(".table-cells").filter(d=>d[0]==="partnership")
-                                    .selectAll("g")
-                                    .data(d=>Object.entries(d[1]))
-                                    .join("g")
-                                    .attr("class","partnership-data")
-                                    .attr("transform",(d)=>{
-                                        if(d[0] === "total"){
-                                            return "translate(160,0)";
-                                        }
-                                        else if(d[0]==="batter1_contri"){
-                                            return "translate(0,10)";
-                                        }
-                                        else{
-                                            return "translate(200,10)";
-                                        }
-                                    });
-        d3.selectAll(".partnership-data").filter(d=>d[0]==="total")
-                                        .selectAll("text")
-                                        .data(d=>[d])
-                                        .join("text")
-                                        .text(d=>d[1].total_runs+"("+d[1].total_balls+")")
-        d3.selectAll(".partnership-data").filter(d=>d[0]==="batter1_contri")
-                                        .selectAll("rect")
-                                        .data(d=>[d])
-                                        .join("rect")
-                                        .attr('x',d=>{console.log(d); return 200-xscale(d[1]);})
-                                        .attr('y',0)
-                                        .attr("width",d=>xscale(d[1]))
-                                        .attr("height",15)
-                                        .attr("fill","red");
-        d3.selectAll(".partnership-data").filter(d=>d[0]==="batter2_contri")
-                                        .selectAll("rect")
-                                        .data(d=>[d])
-                                        .join("rect")
-                                        .attr('x',0)
-                                        .attr('y',0)
-                                        .attr("width",d=>xscale(d[1]))
-                                        .attr("height",15)
-                                        .attr("fill","blue");
-                                    
+                        .range([0,145]);
+            console.log(d3.selectAll(".table-cells").filter(d=>d[0]==="partnership"));
+            let partnership_group = table_cells.filter(d=>d[0]==="partnership")
+                .selectAll("g")
+                .data(d=>Object.entries(d[1]))
+                .join("g")
+                .attr("class","partnership-data")
+                .attr("transform",(d)=>{
+                    if(d[0] === "total"){
+                        return "translate(130,0)";
+                    }
+                    else if(d[0]==="batter1_contri"){
+                        return "translate(0,7)";
+                    }
+                    else{
+                        return "translate(145,7)";
+                    }
+                });
+                partnership_group.filter(d=>d[0]==="total")
+                    .selectAll("text")
+                    .data(d=>[d])
+                    .join("text")
+                    .text(d=>d[1].total_runs+"("+d[1].total_balls+")")
+                partnership_group.filter(d=>d[0]==="batter1_contri")
+                    .selectAll("rect")
+                    .data(d=>[d])
+                    .join("rect")
+                    .attr('x',d=>{console.log(d); return 145-xscale(d[1]);})
+                    .attr('y',0)
+                    .attr("width",d=>xscale(d[1]))
+                    .attr("height",10)
+                    .attr("fill","red");
+                partnership_group.filter(d=>d[0]==="batter2_contri")
+                    .selectAll("rect")
+                    .data(d=>[d])
+                    .join("rect")
+                    .attr('x',0)
+                    .attr('y',0)
+                    .attr("width",d=>xscale(d[1]))
+                    .attr("height",10)
+                    .attr("fill","blue");
+                                       
     }
 }

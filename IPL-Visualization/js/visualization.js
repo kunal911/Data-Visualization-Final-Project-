@@ -80,6 +80,7 @@ class viz{
         "Sunrisers Hyderabad":["SRH"]
         };
         //console.log(first_innings);
+        let extras = 0;
         first_innings.map(d=>{
             //console.log(d);
             if(d.extra_type === "wides" || d.extra_type === "noballs"){
@@ -87,9 +88,17 @@ class viz{
                 d['cumulativescore'] = totalruns_1;
                 //ball_number += 1;
                 d['ball_number'] = ball_number;
-                firstinnings_deliveries[firstinnings_deliveries.length-1].cumulativescore += Number(d.total_run)
+                if(firstinnings_deliveries.length === 0){
+                    extras = Number(d.total_run);
+                }
+                else
+                    firstinnings_deliveries[firstinnings_deliveries.length-1].cumulativescore += Number(d.total_run)
             }
             else{
+                if(extras !== 0){
+                    totalruns_1 += Number(d.total_run)+extras;
+                    extras = 0;
+                }
                 totalruns_1 += Number(d.total_run);
                 d['cumulativescore'] = totalruns_1;
                 ball_number += 1;
@@ -131,7 +140,8 @@ class viz{
         this.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries);
         this.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first");
         this.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second");
-        this.partnership_obj.drawTable(matchID);
+        this.partnership_obj.drawTable(first_innings,"first");
+        this.partnership_obj.drawTable(second_innings,"second");
         this.header.drawHeader(firstinnings_deliveries,secondinnings_deliveries,matchID);
         let max_balls = Math.max(firstinnings_deliveries[firstinnings_deliveries.length-1].ball_number,secondinnings_deliveries[secondinnings_deliveries.length-1].ball_number);
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
@@ -287,7 +297,8 @@ class viz{
                                 that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                                 that.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first",from,to);
                                 that.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second",from,to);
-                                that.partnership_obj.drawTable(matchID,from,to);
+                                that.partnership_obj.drawTable(first_innings,"first",from,to);
+                                that.partnership_obj.drawTable(second_innings,"second",from,to);
                             }
                         })
                         .on("end",function(e){
@@ -303,7 +314,8 @@ class viz{
                                 that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                                 that.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first",from,to);
                                 that.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second",from,to);
-                                that.partnership_obj.drawTable(matchID,from,to);
+                                that.partnership_obj.drawTable(first_innings,"first",from,to);
+                                that.partnership_obj.drawTable(second_innings,"second",from,to);
                             }
                         })
         d3.select("#worm-brush").call(brush);

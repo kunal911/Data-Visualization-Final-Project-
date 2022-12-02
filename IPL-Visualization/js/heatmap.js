@@ -15,6 +15,7 @@ class heatmap{
         d3.select("#heatmap").append("g").attr("class","heatmap-header-2").attr("transform","translate("+(margin_heatmap.left+HEATMAP_WIDTH+90)+","+(margin_heatmap.top+63)+")");
         d3.select("#heatmap").append("g").attr("class","innings2-heatmap").attr("transform","translate("+(margin_heatmap.left+HEATMAP_WIDTH+90)+","+(margin_heatmap.top+81)+")");
         d3.select("#heatmap").append("g").attr("class","innings2-heatmap-labels").attr("transform","translate("+(margin_heatmap.left+HEATMAP_WIDTH+90)+","+(margin_heatmap.top+81)+")");
+        
     }
     updateHeatMap(firstinnings,innings,start = 0,end=120){
         let fi = firstinnings.filter(d=> d.ball_number>=start && d.ball_number<=end);
@@ -168,15 +169,28 @@ class heatmap{
         
             d3.select(".innings1-heatmap-labels").call(d3.axisLeft(yscale));
             d3.select(".innings1-heatmap-labels").select('path').attr("stroke","#FFFFFF");
-        
-            d3.select(".heatmap-header-1").append('g').attr("class",'heatmap-header-text');
-            d3.select(".heatmap-header-1").append('g').attr("class",'heatmap-header-text').attr("transform","translate("+xscale("middle")+",0)");
-            d3.select(".heatmap-header-1").append('g').attr("class",'heatmap-header-text').attr("transform","translate("+xscale("legside")+",0)");
-            let headerdata = ['Off',"Mid",'Leg']
-            d3.select(".heatmap-header-1").selectAll(".heatmap-header-text").append('text')
-                                                .data(headerdata)
+            d3.select(".heatmap-header-1").selectAll(".heatmap-header-text")
+                                            .data(land)
+                                            .join("g")
+                                            .classed("heatmap-header-text",true)
+                                            .attr("transform",d=>{
+                                               if(d==="middle")
+                                                    return "translate("+xscale("middle")+",0)";
+                                                else if(d==="legside")
+                                                    return "translate("+xscale("legside")+",0)";
+                                            })
+            
+            d3.select(".heatmap-header-1").selectAll(".heatmap-header-text").selectAll('text')
+                                                .data(d=>[d])
                                                 .join('text')
-                                                .text(d=>d)
+                                                .text(d=>{
+                                                    if(d==="outside off")
+                                                        return "Off";
+                                                    if(d==="middle")
+                                                        return "mid"
+                                                    if(d==="legside")
+                                                        return "leg"
+                                                })
                                                 .attr('x',8)
                                                 .attr('y',15)
                     
@@ -228,17 +242,31 @@ class heatmap{
             d3.select(".innings2-heatmap-labels").call(d3.axisLeft(yscale));
             d3.select(".innings2-heatmap-labels").select('path').attr("stroke","#FFFFFF");
         
-            d3.select(".heatmap-header-2").append('g').attr("class",'heatmap-header-text');
-            d3.select(".heatmap-header-2").append('g').attr("class",'heatmap-header-text').attr("transform","translate("+xscale("middle")+",0)");
-            d3.select(".heatmap-header-2").append('g').attr("class",'heatmap-header-text').attr("transform","translate("+xscale("legside")+",0)");
-            let headerdata = ['Off',"Mid",'Leg']
-            d3.select(".heatmap-header-2").selectAll(".heatmap-header-text").append('text')
-                                                .data(headerdata)
+            d3.select(".heatmap-header-2").selectAll(".heatmap-header-text")
+                                            .data(land)
+                                            .join("g")
+                                            .classed("heatmap-header-text",true)
+                                            .attr("transform",d=>{
+                                               if(d==="middle")
+                                                    return "translate("+xscale("middle")+",0)";
+                                                else if(d==="legside")
+                                                    return "translate("+xscale("legside")+",0)";
+                                            })
+            
+            d3.select(".heatmap-header-2").selectAll(".heatmap-header-text").selectAll('text')
+                                                .data(d=>[d])
                                                 .join('text')
-                                                .text(d=>d)
+                                                .text(d=>{
+                                                    if(d==="outside off")
+                                                        return "Off";
+                                                    if(d==="middle")
+                                                        return "mid"
+                                                    if(d==="legside")
+                                                        return "leg"
+                                                })
                                                 .attr('x',8)
                                                 .attr('y',15)
-                    
+            
             let mycolor = d3.scaleLinear()
                             .domain([0,max_size])
                             .range(["white","#EF7D30"]);
