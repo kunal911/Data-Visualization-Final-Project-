@@ -5,6 +5,7 @@ class runperover{
         d3.select(".content").append("svg").attr("width",RPO_SVGWIDTH).attr("height",RPO_SVGHEIGHT).attr("id","runsperover");
         d3.select("#runsperover").append("text");
         d3.select("#runsperover").append("g").attr("id","rpo-group").attr("transform","translate(130,40)");
+        d3.select("#runsperover").append('div').attr('id','tooltip').attr('style', 'position: absolute; opacity: 0;');
         this.x = d3.select("#rpo-group").append("g").attr("id","x-axis").attr("transform","translate(0,400)");
         this.y = d3.select("#rpo-group").append("g").attr("id","y-axis").attr("transform","translate(0,0)")
         this.bar_group = d3.select("#rpo-group").append("g").attr("id","bar-groups").attr("transform","translate(0,0)");
@@ -82,7 +83,16 @@ class runperover{
         let color = d3.scaleOrdinal()
                         .domain(subgroups)
                         .range(["blue","red"]);
-        
+        // var tooltip = d3.select("#runsperover")
+        //                 .append("div")
+        //                 .style("opacity", 0)
+        //                 .attr("class", "tooltip")
+        //                 .style("background-color", "white")
+        //                 .style("border", "solid")
+        //                 .style("border-width", "2px")
+        //                 .style("border-radius", "5px")
+        //                 .style("padding", "5px")
+
         let rect_group = this.bar_group.selectAll(".maingroups")
                                         .data(data)
                                         .join("g")
@@ -99,6 +109,22 @@ class runperover{
                     .attr('y',d=>yscale(d.value))
                     .attr("width",subgroup_scale.bandwidth())
                     .attr("height",d=>400-yscale(d.value))
-                    .attr("fill",d=>color(d.key));
+                    .attr("fill",d=>color(d.key))
+                    
+                    // .on("mouseover",function(d){
+                    //     d3.select('#tooltip')
+                    //     .style('opacity',1)
+                    //     .text(d.value)
+                    //     console.log(d=>400-yscale(d.value))
+                    // })
+                    // .on("mouseout",function()
+                    // {
+                    //     d3.select("#tooltip")
+                    //     .style('opacity',0)
+
+                    // })
+        
+       
+
     }
 }
