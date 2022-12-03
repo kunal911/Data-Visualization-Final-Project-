@@ -19,13 +19,13 @@ class viz{
         let linesvg = d3.select(".content").append("svg").attr("width",LINE_CHART_WIDTH).attr("height",LINE_CHART_HEIGHT).attr("id","line-chart")//.attr("transform","translate(50,0)");
         d3.select("#line-chart").append("text");
        
-        let x_axisg = linesvg.append("g").attr("id","x-axis");
-        let y_axisg = linesvg.append("g").attr("id","y-axis");
-        let linesg = linesvg.append("g").attr("id","lines");
+        linesvg.append("g").attr("id","x-axis");
+        linesvg.append("g").attr("id","y-axis");
+        linesvg.append("g").attr("id","lines");
         let overlayg = linesvg.append("g").attr("id","overlay");
-        let overlayline = overlayg.append("line");
-        let brushg = linesvg.append("g").attr("id","worm-brush");
-        let circleg = linesvg.append("g").attr("id","wickets-circle");
+        overlayg.append("line");
+        linesvg.append("g").attr("id","worm-brush");
+        linesvg.append("g").attr("id","wickets-circle");
         linesvg.append("g").attr("id","labels");
         d3.select("#line-chart").append("g").attr("id","over-choosen").append("text");
         d3.select("#line-chart").append("g").attr("id","legend");
@@ -37,19 +37,15 @@ class viz{
         this.heatmap_obj = new heatmap();
         this.partnership_obj = new partnership(this.matchData,this.perBallData);
         this.runperover_obj = new runperover();
-    //console.log(COLOR_PALLETE["Sunrisers Hyderabad"]);
+    
     }
     drawWormGraph(matchID){
-        //console.log(matchID);
         
         let groupbyID = d3.group(this.perBallData,d=>d.ID);
         let matchDetails = groupbyID.get(matchID);
-        //console.log(groupbyID.get(matchID).length);
         let innings_group = d3.group(matchDetails,d=>d.innings);
         let first_innings = innings_group.get("1");
         let second_innings = innings_group.get("2");
-        let svgheight = 300;
-        let svgwidth = 300;
         let totalruns_1 = 0;
         let totalruns_2 = 0;
         let totalwickets_1 = 0;
@@ -80,14 +76,14 @@ class viz{
         "Rajasthan Royals":["RR"],
         "Sunrisers Hyderabad":["SRH"]
         };
-        //console.log(first_innings);
+        
         let extras = 0;
+
+        // Modifying the data to include 'cumulative score' and 'ball number' features in the data
         first_innings.map(d=>{
-            //console.log(d);
             if(d.extra_type === "wides" || d.extra_type === "noballs"){
                 totalruns_1 += Number(d.total_run);
                 d['cumulativescore'] = totalruns_1;
-                //ball_number += 1;
                 d['ball_number'] = ball_number;
                 if(firstinnings_deliveries.length === 0){
                     extras = Number(d.total_run);
@@ -143,10 +139,8 @@ class viz{
                 secondinnings_deliveries.push(d);
             }
         });
-        // console.log(wicket_deliveries);
-        // console.log(first_innings)
-        // console.log(firstinnings_deliveries);
-        // console.log(secondinnings_deliveries);
+        
+        // creating pie_chart, heatmap, partnership chart with the modified data
         this.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries);
         this.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first");
         this.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second");
@@ -154,25 +148,25 @@ class viz{
         this.partnership_obj.drawTable(second_innings,"second");
         this.header.drawHeader(firstinnings_deliveries,secondinnings_deliveries,matchID);
         this.runperover_obj.draw_rpo(firstinnings_deliveries,secondinnings_deliveries);
+       
         let max_balls = Math.max(firstinnings_deliveries[firstinnings_deliveries.length-1].ball_number,secondinnings_deliveries[secondinnings_deliveries.length-1].ball_number);
         let max_score = Math.max(first_innings[first_innings.length-1].cumulativescore,second_innings[second_innings.length-1].cumulativescore);
-        //console.log(max_balls);
+        
+        // scales for the worm graph
         let xscale = d3.scaleLinear()
                         .domain([1,max_balls])
                         .range([PADDING.LEFT,LINE_CHART_WIDTH-PADDING.RIGHT-1]).nice();
         let yscale = d3.scaleLinear()
                         .domain([0,max_score])
                         .range([LINE_CHART_HEIGHT-PADDING.TOP,PADDING.BOTTOM]).nice();
-        //console.log(yscale);
+
         let lines = d3.select("#lines");
         
         const data = [firstinnings_deliveries,secondinnings_deliveries];
         let dline = d3.line()
                         .x(d=>xscale(d['ball_number']))
                         .y(d=>yscale(d.cumulativescore));
-        //runs scored
-        //console.log(first_innings);
-        //console.log(COLOR_PALLETE["Sunrisers Hyderabad"]);
+        
         d3.select("#line-chart").select("text").text("Worm Graph").attr('x',380).attr('y',30).style("font-weight","bold");
         let legend_data=[{"team1":firstinnings_deliveries[0].BattingTeam,"color1":COLOR_PALLETE[firstinnings_deliveries[0].BattingTeam],
         "team2":secondinnings_deliveries[0].BattingTeam,"color2":COLOR_PALLETE[secondinnings_deliveries[0].BattingTeam]}];
