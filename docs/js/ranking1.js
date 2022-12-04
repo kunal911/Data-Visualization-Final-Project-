@@ -60,7 +60,7 @@ class Ranking{
                 .attr("text-anchor","end")
                 .attr('x',RANKING_SVGWIDTH/2)
                 .attr('y',RANKING_SVGHEIGHT-120)
-                .text("Overs");   
+                .text("Years");   
         
             //yaxis label
             d3.select("#ranking-axis-labels")
@@ -69,7 +69,7 @@ class Ranking{
                 .attr('x',-RANKING_SVGHEIGHT/3)
                 .attr('y',70)
                 .attr("transform","rotate(-90)")
-                .text("Runs");
+                .text("Ranks");
             
             //ranking lines
             d3.select(".lines-group")
