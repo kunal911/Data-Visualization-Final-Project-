@@ -132,7 +132,7 @@ class heatmap{
                         .range([HEATMAP_HEIGHT-margin_heatmap.top-margin_heatmap.bottom,0]);
         
         let wicket_deliveries = data.filter(d=>d.wicket>0);
-        d3.select("#heatmap").select("text").text("Best Bowling Performance of each innings").attr('x',HEATMAP_WIDTHSVG/2-100).attr('y',30).style("font-weight","bold");
+        d3.select("#heatmap").select("text").text("Best Bowling Performance of each innings").attr('x',HEATMAP_WIDTHSVG/2-130).attr('y',30).style("font-weight","bold");
         // color scale for heatmap
         let mycolor = d3.scaleLinear()
                         .domain([0,max_size])

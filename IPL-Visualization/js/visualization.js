@@ -17,8 +17,8 @@ class viz{
         d3.select(".team1").append("g").attr("class","team-name").attr("transform","translate(35,0)");
         d3.select(".team1").append("g").attr("class","player-name").attr("transform","translate(35,0)");
         let linesvg = d3.select(".content").append("svg").attr("width",LINE_CHART_WIDTH).attr("height",LINE_CHART_HEIGHT).attr("id","line-chart")//.attr("transform","translate(50,0)");
-        d3.select("#line-chart").append("text");
-       
+        d3.select("#line-chart").append("text").attr("id","header-worm");
+        d3.select("#line-chart").append("text").attr("id","brush-text");
         linesvg.append("g").attr("id","x-axis");
         linesvg.append("g").attr("id","y-axis");
         linesvg.append("g").attr("id","lines");
@@ -144,8 +144,10 @@ class viz{
         this.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries);
         this.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first");
         this.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second");
-        this.partnership_obj.drawTable(first_innings,"first");
-        this.partnership_obj.drawTable(second_innings,"second");
+        // this.partnership_obj.drawTable(first_innings,"first");
+        // this.partnership_obj.drawTable(second_innings,"second");
+        this.partnership_obj.drawTable(firstinnings_deliveries,"first");
+        this.partnership_obj.drawTable(secondinnings_deliveries,"second");
         this.header.drawHeader(firstinnings_deliveries,secondinnings_deliveries,matchID);
         this.runperover_obj.draw_rpo(firstinnings_deliveries,secondinnings_deliveries);
        
@@ -162,8 +164,8 @@ class viz{
 
         
         // Heading of worm graph
-        d3.select("#line-chart").select("text").text("Worm Graph").attr('x',380).attr('y',30).style("font-weight","bold");
-        
+        d3.select("#header-worm").text("Worm Graph").attr('x',380).attr('y',30).style("font-weight","bold");
+        d3.select("#brush-text").text("(Brush available on x-axis)").attr('x',347).attr('y',45).style("font-size",14);
         // Legend for worm graph
         let legend_data=[{"team1":firstinnings_deliveries[0].BattingTeam,"color1":COLOR_PALLETE[firstinnings_deliveries[0].BattingTeam],
         "team2":secondinnings_deliveries[0].BattingTeam,"color2":COLOR_PALLETE[secondinnings_deliveries[0].BattingTeam]}];
@@ -319,5 +321,11 @@ class viz{
                         })
         d3.select("#worm-brush").call(brush);
         d3.select("#lines").raise();
+        
+        d3.select("#brush_reset").on("click",function(d,e){
+            d3.select("#worm-brush").call(brush.move,null);
+            that.drawWormGraph(matchID);
+            d3.select("#over-choosen").selectAll("*").remove();
+        })
     }
 }
