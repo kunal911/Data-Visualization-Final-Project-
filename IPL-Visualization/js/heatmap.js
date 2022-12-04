@@ -17,14 +17,16 @@ class heatmap{
         d3.select("#heatmap").append("g").attr("class","innings2-heatmap-labels").attr("transform","translate("+(margin_heatmap.left+HEATMAP_WIDTH+90)+","+(margin_heatmap.top+81)+")");
         
     }
-    updateHeatMap(firstinnings,innings,start = 0,end=120){
-        let fi = firstinnings.filter(d=> d.ball_number>=start && d.ball_number<=end);
+    updateHeatMap(innings_data,innings,start = 0,end=120){
+        let fi = innings_data.filter(d=> d.ball_number>=start && d.ball_number<=end);
         let bowler = d3.group(fi,(d)=>d.bowler);
         let max = 1;
         let highest_wickettaker_1 = [];
         let best_bowler = "";
         let best_economy_bowler = "";
         let min_economy = 999;
+
+        // selecting best bowler - according to number of wickets taken
         bowler.forEach((element,key) => {
             let wickets_1 = 0;
             let runs = 0;
@@ -44,10 +46,7 @@ class heatmap{
                 min_economy = economy;
             }
         });
-        // console.log(bowler);
-        // console.log(best_economy_bowler);
-        // console.log(max);
-        // console.log(highest_wickettaker_1);
+        // if more than one bowler have same number of wickets - then select according to their economy
         if(highest_wickettaker_1.length>1){
             let min = 999;
             highest_wickettaker_1.forEach((element)=>{
@@ -64,7 +63,7 @@ class heatmap{
                     best_bowler = element;
                 }
             })
-           // console.log(best_bowler);
+           
         }
         else if(highest_wickettaker_1.length==1){
             best_bowler = highest_wickettaker_1[0];
@@ -73,28 +72,21 @@ class heatmap{
         {
             best_bowler = best_economy_bowler;
         }
-       // console.log(best_bowler);
+       
         let deliveries_bowled = bowler.get(best_bowler);
         let bowling_lengths = d3.group(deliveries_bowled,(d)=>d.bowling_length);
-        //console.log(bowling_lengths);
-        bowling_lengths.forEach((element,key)=>{
-            //console.log(key);
-            let landing_area = d3.group(element,(d)=>d.landing_area);
-            //console.log(landing_area);
-        })
+        
+        // creating data about balls landing area and wickets taken on those deliveries
         let data = [];
         let lengths = ["short","length","full","yorker"];
         let land = ["outside off","middle","legside"];
         let max_size = 0;
         for(const length of lengths){
             let bowl_length = bowling_lengths.get(length);
-            //console.log(bowl_length);
             if(bowl_length !== undefined){
                 let landing_area = d3.group(bowl_length,(d)=>d.landing_area);
-                //console.log(landing_area);
                 for (const landing of land){
                     let area = landing_area.get(landing);
-                    //console.log(area);
                     let obj={};
                     obj['length'] = length;
                     obj['area'] = landing;
@@ -128,23 +120,27 @@ class heatmap{
                 }
             }
         }
-        //console.log(max_size);
-        //console.log(data);
         
+        //x-axis scale
         let xscale = d3.scaleBand()
                         .domain(land)
                         .range([0,HEATMAP_WIDTH-margin_heatmap.left-margin_heatmap.right]);
+        
+        //y-axis scale
         let yscale = d3.scaleBand()
                         .domain(lengths)
                         .range([HEATMAP_HEIGHT-margin_heatmap.top-margin_heatmap.bottom,0]);
         
         let wicket_deliveries = data.filter(d=>d.wicket>0);
-       // console.log(wicket_deliveries);
         d3.select("#heatmap").select("text").text("Best Bowling Performance of each innings").attr('x',HEATMAP_WIDTHSVG/2-100).attr('y',30).style("font-weight","bold");
-        
-        //let innings2 = {"i":"Second Innings","name":highest_scorer_2,"data":{"score":score_2,"balls":balls_faced_2}}
+        // color scale for heatmap
+        let mycolor = d3.scaleLinear()
+                        .domain([0,max_size])
+                        .range(["white","#EF7D30"]);
         if(innings ==="first"){
             let innings_data = {"i":"First Innings","name":best_bowler,"data":{"wickets":max}};
+            
+            //displaying best bowler and their number of wickets
             d3.select(".innings1-label").selectAll("text")
                                 .data(Object.entries(innings_data))
                                 .join("text")
@@ -166,9 +162,11 @@ class heatmap{
                                     if(d[0]==="i")
                                         return "bold";
                                 });
-        
+            //x-axis
             d3.select(".innings1-heatmap-labels").call(d3.axisLeft(yscale));
             d3.select(".innings1-heatmap-labels").select('path').attr("stroke","#FFFFFF");
+            
+            //displaying landing area above heatmap
             d3.select(".heatmap-header-1").selectAll(".heatmap-header-text")
                                             .data(land)
                                             .join("g")
@@ -193,11 +191,10 @@ class heatmap{
                                                 })
                                                 .attr('x',8)
                                                 .attr('y',15)
-                    
-            let mycolor = d3.scaleLinear()
-                            .domain([0,max_size])
-                            .range(["white","#EF7D30"]);
             
+            
+            
+            //heatmap
             d3.select(".innings1-heatmap").selectAll("rect")
                                             .data(data,function(d){return d.area+':'+d.length})
                                             .join("rect")
@@ -208,6 +205,7 @@ class heatmap{
                                             .attr("stroke","black")
                                             .style("fill",(d)=>mycolor(d.size));
 
+            // displaying wickets data over heatmap
             d3.select(".innings1-heatmap").selectAll("text")
                                             .data(wicket_deliveries)
                                             .join("text")
@@ -218,6 +216,7 @@ class heatmap{
         }
         else{
             let innings_data = {"i":"Second Innings","name":best_bowler,"data":{"wickets":max}};
+            //displaying best bowler and their number of wickets
             d3.select(".innings2-label").selectAll("text")
                                 .data(Object.entries(innings_data))
                                 .join("text")
@@ -241,7 +240,7 @@ class heatmap{
                                 });
             d3.select(".innings2-heatmap-labels").call(d3.axisLeft(yscale));
             d3.select(".innings2-heatmap-labels").select('path').attr("stroke","#FFFFFF");
-        
+            //displaying landing area above heatmap
             d3.select(".heatmap-header-2").selectAll(".heatmap-header-text")
                                             .data(land)
                                             .join("g")
@@ -267,10 +266,7 @@ class heatmap{
                                                 .attr('x',8)
                                                 .attr('y',15)
             
-            let mycolor = d3.scaleLinear()
-                            .domain([0,max_size])
-                            .range(["white","#EF7D30"]);
-            
+            //heatmap - second innings
             d3.select(".innings2-heatmap").selectAll("rect")
                                             .data(data,function(d){return d.area+':'+d.length})
                                             .join("rect")
@@ -280,7 +276,7 @@ class heatmap{
                                             .attr("height",yscale.bandwidth())
                                             .attr("stroke","black")
                                             .style("fill",(d)=>mycolor(d.size));
-
+              // displaying wickets data over heatmap
             d3.select(".innings2-heatmap").selectAll("text")
                                             .data(wicket_deliveries)
                                             .join("text")

@@ -35,22 +35,23 @@ class partnership{
         this.tableg_2 = this.tablesvg.append("g").attr("class","table-group-i2").attr("transform","translate(700,22)");
 
     }
-    drawTable(first_innings,innings,from=0,to=120){
+    drawTable(innings_data,innings,from=0,to=120){
         
-        let last_element = first_innings.length-1
-        let last_ball = first_innings[last_element];
+        let last_element = innings_data.length-1
+        let last_ball = innings_data[last_element];
         
+        //creating partnership data
         let partnership_details = [];
         let obj = {};
         let max_runs = 0;
-        for(let i=0;i<first_innings.length;i++){
-            if(first_innings[i].ball_number>=from && first_innings[i].ball_number<=to){
-                if(Number(first_innings[i].isWicketDelivery)===1){
+        for(let i=0;i<innings_data.length;i++){
+            if(innings_data[i].ball_number>=from && innings_data[i].ball_number<=to){
+                if(Number(innings_data[i].isWicketDelivery)===1){
                     if(Object.keys(obj).length === 0){
-                        obj['batter1'] = {"name":first_innings[i].batter,"batter1_runs":0};
+                        obj['batter1'] = {"name":innings_data[i].batter,"batter1_runs":0};
                         obj['partnership'] = {"total":{"total_runs":0}};
-                        obj["batter2"] ={"name":first_innings[i]["non-striker"],"batter2_runs":0};
-                        if(first_innings[i].batter === obj['batter1'].name){
+                        obj["batter2"] ={"name":innings_data[i]["non-striker"],"batter2_runs":0};
+                        if(innings_data[i].batter === obj['batter1'].name){
                             obj['batter1']['batter1_balls'] = 1;
                             obj['batter2']['batter2_balls'] = 0;
                         }
@@ -60,7 +61,7 @@ class partnership{
                         }
                         obj['partnership']['total']['total_balls'] = 1;
                     }
-                    if(first_innings[i].batter === obj['batter1'].name){
+                    if(innings_data[i].batter === obj['batter1'].name){
                         obj['batter1']['batter1_balls'] += 1;
                     }
                     else{
@@ -76,28 +77,28 @@ class partnership{
                 }
                 else{
                     if(Object.keys(obj).length === 0){
-                        obj['batter1'] = {"name":first_innings[i].batter,"batter1_runs":0,"batter1_balls":0};
+                        obj['batter1'] = {"name":innings_data[i].batter,"batter1_runs":0,"batter1_balls":0};
                         obj['partnership'] = {"total":{"total_runs":0,"total_balls":0},"batter1_contri":0,"batter2_contri":0};
-                        obj['batter2'] = {"name":first_innings[i]["non-striker"],"batter2_runs":0,"batter2_balls":0};
+                        obj['batter2'] = {"name":innings_data[i]["non-striker"],"batter2_runs":0,"batter2_balls":0};
                         
                     }
-                    if(first_innings[i].batter === obj['batter1'].name){
-                        if(first_innings[i].extra_type !== "wides" || first_innings[i].extra_type !== "noballs"){
+                    if(innings_data[i].batter === obj['batter1'].name){
+                        if(innings_data[i].extra_type !== "wides" || innings_data[i].extra_type !== "noballs"){
                             obj['batter1']['batter1_balls'] += 1;
                             obj['partnership']['total']['total_balls'] += 1;
-                            obj['batter1']['batter1_runs'] += Number(first_innings[i].batsman_run);
+                            obj['batter1']['batter1_runs'] += Number(innings_data[i].batsman_run);
                             obj['partnership']['batter1_contri'] = obj['batter1']['batter1_runs'];
                         }
-                        obj['partnership']['total']['total_runs'] += Number(first_innings[i].total_run);
+                        obj['partnership']['total']['total_runs'] += Number(innings_data[i].total_run);
                     }
-                    else if(first_innings[i].batter === obj['batter2'].name){
-                        if(first_innings[i].extra_type !== "wides" || first_innings[i].extra_type !== "noballs"){
+                    else if(innings_data[i].batter === obj['batter2'].name){
+                        if(innings_data[i].extra_type !== "wides" || innings_data[i].extra_type !== "noballs"){
                             obj['batter2']['batter2_balls'] += 1;
                             obj['partnership']['total']['total_balls'] += 1;
-                            obj['batter2']['batter2_runs'] += Number(first_innings[i].batsman_run);
+                            obj['batter2']['batter2_runs'] += Number(innings_data[i].batsman_run);
                             obj['partnership']['batter2_contri'] = obj['batter2']['batter2_runs'];
                         }
-                        obj['partnership']['total']['total_runs'] += Number(first_innings[i].total_run);
+                        obj['partnership']['total']['total_runs'] += Number(innings_data[i].total_run);
                     }
                 }
             }
@@ -111,14 +112,16 @@ class partnership{
             partnership_details.push(obj);
         }
 
-        //console.log(partnership_details);
-        //console.log(max_runs);
         let row_height = 40;
         let rows;
+        //partnership header
         d3.select("#partnership-label").text("Partnership").attr('x',Partnership_SVGWidth/2-150).attr('y',11).style("font-weight","bold");
+        
+        //innings header
         d3.select("#first-innings").text("First Innings").attr('x',310).attr('y',30).style("font-weight","bold");
         d3.select("#second-innings").text("Second Innings").attr('x',930).attr('y',30).style("font-weight","bold");
         if(innings==="first"){
+            //creating row-group for the table
             rows = this.tableg.selectAll(".table-row")
             .data(partnership_details)
             .join("g")
@@ -126,12 +129,14 @@ class partnership{
             .attr("transform",(d,i)=>"translate(0,"+((i+1)*row_height)+")");
         }
         else{
+            //creating row-group for the table
             rows = this.tableg_2.selectAll(".table-row")
             .data(partnership_details)
             .join("g")
             .classed("table-row",true)
             .attr("transform",(d,i)=>"translate(0,"+((i+1)*row_height)+")");
         }
+            //creating cells in each row group
             let table_cells = rows.selectAll(".table-cells")
             .data(d=>Object.entries(d))
             .join("g")
@@ -143,23 +148,26 @@ class partnership{
                     return "translate("+(startpositions[i])+",5)"
                 return "translate("+(startpositions[i])+",0)";
             });
-
+            //displaying batsman-1 name and their runs
             table_cells.filter(d=>d[0]==="batter1")
                 .selectAll("text")
                 .data(d=>[d])
                 .join("text")
                 .text(d=>d[1].name+" \n "+d[1].batter1_runs + "("+d[1].batter1_balls+")");
-
+            
+            //displaying batsman-2 name and their runs
             table_cells.filter(d=>d[0]==="batter2")
                 .selectAll("text")
                 .data(d=>[d])
                 .join("text")
                 .text(d=>d[1].name+" \n "+d[1].batter2_runs + "("+d[1].batter2_balls+")");
- 
+            
+            //xscale
             let xscale = d3.scaleLinear()
                         .domain([0,max_runs])
                         .range([0,145]);
-            //console.log(d3.selectAll(".table-cells").filter(d=>d[0]==="partnership"));
+            
+            //displaying total runs in partnership
             let partnership_group = table_cells.filter(d=>d[0]==="partnership")
                 .selectAll("g")
                 .data(d=>Object.entries(d[1]))
@@ -180,7 +188,9 @@ class partnership{
                     .selectAll("text")
                     .data(d=>[d])
                     .join("text")
-                    .text(d=>d[1].total_runs+"("+d[1].total_balls+")")
+                    .text(d=>d[1].total_runs+"("+d[1].total_balls+")");
+
+                //displying batter 1 contribution through bar
                 partnership_group.filter(d=>d[0]==="batter1_contri")
                     .selectAll("rect")
                     .data(d=>[d])
@@ -189,7 +199,9 @@ class partnership{
                     .attr('y',0)
                     .attr("width",d=>xscale(d[1]))
                     .attr("height",10)
-                    .attr("fill","red")
+                    .attr("fill","red");
+
+                //displying batter 2 contribution through bar
                 partnership_group.filter(d=>d[0]==="batter2_contri")
                     .selectAll("rect")
                     .data(d=>[d])

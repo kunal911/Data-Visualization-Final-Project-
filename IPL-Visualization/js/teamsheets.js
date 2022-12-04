@@ -5,10 +5,12 @@ class teamsheets{
         
     }
     drawTable(matchID,team){
+        // filter data using matchID
         let matchDetails = this.matchData.filter(d=>d.ID === matchID);
-        //console.log(matchDetails);
         let players =[] ;
         let teamname = [];
+        
+        // storing players name and team name in the variables
         if(team === "team1"){
             let player_name = matchDetails[0].Team1Players.split(",");
             teamname.push(matchDetails[0].Team1);
@@ -20,7 +22,6 @@ class teamsheets{
                     players.push(player_name[i].slice(2,player_name[i].length-1));
                 }
             }
-           // console.log(players);
         }
         else{
             let player_name = matchDetails[0].Team2Players.split(",");
@@ -35,6 +36,8 @@ class teamsheets{
             }
         }
         let row_height = TEAM_HEIGHT/(players.length+2);
+        
+        //displaying team name
         d3.select("."+team).select(".team-name").selectAll("text")
                                                 .data(teamname)
                                                 .join("text")
@@ -42,6 +45,7 @@ class teamsheets{
                                                 .attr('x',5)
                                                 .attr('y',row_height)
                                                 .style("font-weight","bold");
+        // displaying player name
         d3.select("."+team).select(".player-name").selectAll("text")
                     .data(players)
                     .join("text")

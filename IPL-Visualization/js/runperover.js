@@ -12,19 +12,17 @@ class runperover{
         this.legend_group = d3.select("#runsperover").append("g").attr("id","legend");
     }
     draw_rpo(firstinnings,secondinnings){
-        console.log(firstinnings);
-        console.log(secondinnings);
+        //group data according to overs
         let groupByOver_1 = d3.group(firstinnings,d=>d.overs);
         let groupByOver_2 = d3.group(secondinnings,d=>d.overs)
-        console.log(groupByOver_1);
-        console.log(groupByOver_2);
+        
+        //creating runs per over data
         let data = []
         let obj={};
         for(let i=0;i<20;i++){
             obj={};
             let over_1 = groupByOver_1.get(""+i);
             let over_2 = groupByOver_2.get(""+i);
-            //console.log(groupByOver_1.get('0'));
             if(over_1!==undefined && over_2!==undefined){
                 obj['over'] = i+1;
                 let run_1 = d3.sum(over_1,d=>Number(d.total_run))
@@ -46,11 +44,15 @@ class runperover{
             }
             data.push(obj);
         }
-        console.log(data);
-        //console.log(data.columns)
+       
         let groups = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
         let subgroups = ["innings1","innings2"];
         let legend_data=[{"i1":"First Innings","color1":"blue","i2":"Second Innings","color2":"red"}];
+        
+        // runs per over heading
+        d3.select("#runsperover").select("text").text("Runs Per Over").attr('x',RPO_SVGWIDTH/2).attr('y',15).style("font-weight","bold");
+        
+        //runs per over graph legend
         this.legend_group.selectAll("*").remove();
         this.legend_group.selectAll(".header-data-rpo")
                         .data(legend_data)
@@ -69,17 +71,21 @@ class runperover{
                         .padding([0.2]);
         let xaxis = d3.axisBottom().scale(xscale);                
         this.x.call(xaxis);
+        
+        //y-axis
         let max_runs = d3.max([d3.max(data,d=>d['innings1_run']),d3.max(data,d=>d['innings2_run'])]);
         let yscale = d3.scaleLinear()
                         .domain([max_runs,0])
                         .range([0,400]);
         let yaxis = d3.axisLeft().scale(yscale);
         this.y.call(yaxis);
-        d3.select("#runsperover").select("text").text("Runs Per Over").attr('x',RPO_SVGWIDTH/2).attr('y',15).style("font-weight","bold");
+        
+        //subgroup scales
         let subgroup_scale = d3.scaleBand()
                                 .domain(subgroups)
                                 .range([0,xscale.bandwidth()])
                                 .padding([0.05]);
+        //color scale
         let color = d3.scaleOrdinal()
                         .domain(subgroups)
                         .range(["blue","red"]);
@@ -92,13 +98,15 @@ class runperover{
         //                 .style("border-width", "2px")
         //                 .style("border-radius", "5px")
         //                 .style("padding", "5px")
-
+        
+        //creating rect group for each group
         let rect_group = this.bar_group.selectAll(".maingroups")
                                         .data(data)
                                         .join("g")
                                         .classed("maingroups",true)
                                         .attr("transform",d=>"translate("+(xscale(d.over))+",0)");
         
+        //displaying rect for each innings over by over
         rect_group.selectAll("rect")
                     .data(d=>{
                         console.log(d);
@@ -124,7 +132,5 @@ class runperover{
 
                     // })
         
-       
-
     }
 }

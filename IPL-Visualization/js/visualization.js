@@ -160,14 +160,11 @@ class viz{
                         .domain([0,max_score])
                         .range([LINE_CHART_HEIGHT-PADDING.TOP,PADDING.BOTTOM]).nice();
 
-        let lines = d3.select("#lines");
         
-        const data = [firstinnings_deliveries,secondinnings_deliveries];
-        let dline = d3.line()
-                        .x(d=>xscale(d['ball_number']))
-                        .y(d=>yscale(d.cumulativescore));
-        
+        // Heading of worm graph
         d3.select("#line-chart").select("text").text("Worm Graph").attr('x',380).attr('y',30).style("font-weight","bold");
+        
+        // Legend for worm graph
         let legend_data=[{"team1":firstinnings_deliveries[0].BattingTeam,"color1":COLOR_PALLETE[firstinnings_deliveries[0].BattingTeam],
         "team2":secondinnings_deliveries[0].BattingTeam,"color2":COLOR_PALLETE[secondinnings_deliveries[0].BattingTeam]}];
         d3.select("#legend").selectAll("*").remove();
@@ -179,6 +176,13 @@ class viz{
         d3.select(".header-data").append("text").attr('x',PADDING.LEFT+28).attr('y',PADDING.TOP).text(d=>SHORT_FORM[d.team1]);
         d3.select(".header-data").append("rect").attr('x',PADDING.LEFT+70).attr('y',PADDING.TOP-10).attr("width",10).attr("height",10).attr("fill",d=>d.color2);
         d3.select(".header-data").append("text").attr('x',PADDING.LEFT+83).attr('y',PADDING.TOP).text(d=>SHORT_FORM[d.team2]);
+        
+        // Lines in worm graph
+        let lines = d3.select("#lines");
+        const data = [firstinnings_deliveries,secondinnings_deliveries];
+        let dline = d3.line()
+                        .x(d=>xscale(d['ball_number']))
+                        .y(d=>yscale(d.cumulativescore));
         lines.selectAll('path')
              .data(data)
              .join('path')
@@ -186,7 +190,7 @@ class viz{
              .attr('stroke',(d)=>COLOR_PALLETE[d[0].BattingTeam])
              .attr("d",dline);
 
-         // wickets circle    
+        // wickets circle over worm graph    
         d3.select("#wickets-circle")
             .selectAll("circle")
             .data(wicket_deliveries)
@@ -195,16 +199,14 @@ class viz{
             .attr("cy",d=>yscale(d['cumulativescore']))
             .attr("r",4)
             .attr("fill",(d)=>COLOR_PALLETE[d.BattingTeam]);
-        let count = -12;
-            let xaxis = d3.axisBottom()
-                        .scale(xscale)
-                        // .ticks(9)
-                        // .tickFormat((d)=>{
-                        //     if(d%30===0)     
-                        //         return d/6;
-                        // });
+        
+        //x-axis
+        let xaxis = d3.axisBottom()
+                        .scale(xscale);
         d3.select("#x-axis").attr("transform","translate(0,"+(LINE_CHART_HEIGHT-PADDING.BOTTOM)+")")
                             .call(xaxis);
+        
+        //y-axis                    
         let yaxis = d3.axisLeft()
                         .scale(yscale);
         d3.select("#y-axis").attr("transform","translate("+PADDING.LEFT+",0)")
@@ -226,8 +228,8 @@ class viz{
             .attr('y',PADDING.RIGHT - 15)
             .attr("transform","rotate(-90)")
             .text("Runs");
-        // Sliding bar on the graph
-        //let slider_lastpoint = 
+        
+        // Sliding bar on the graph 
         d3.select("#line-chart").on("mousemove",(event)=>{
             if(d3.pointer(event)[0]>PADDING.LEFT && d3.pointer(event)[0]<LINE_CHART_WIDTH-PADDING.RIGHT){
                 d3.select("#overlay")
@@ -237,37 +239,34 @@ class viz{
                     .attr('x2',d3.pointer(event)[0])
                     .attr('y1',LINE_CHART_HEIGHT-PADDING.TOP)
                     .attr('y2',PADDING.BOTTOM);
-            
+                
+                // data to be displayed for slider
                 const ballno = Math.floor(xscale.invert(d3.pointer(event)[0]));
-                //console.log(ballno);
                 let arr = [[{"text":"overs","BattingTeam":null}]];
                 for(let innings of data){
                     let filtered = innings.filter((ball)=>ball.ball_number === ballno);
-                    //console.log(filtered);
                     if(filtered.length!==0){
                         arr.push(filtered);
-                        //console.log(arr[0][0]);
                         arr[0][0]["overs"] = filtered[0]["overs"];
                         arr[0][0]['balls'] = filtered[0]["ballnumber"];
                         arr[0][0]['ball_number'] = filtered[0]['ball_number'];
                     }
                 }
-                //console.log(arr);
+
+                //data formatting for slider
                 let overlaytext = function(d){
-                    
                     let overs = "";
                     if(d[0]["text"] === "overs"){
-                        //console.log(d[0]);
+                        
                         let over = Math.floor(d[0]['ball_number']/6);
                         let ball = d[0]['ball_number']%6;
                         overs = "Overs: "+d[0].overs+"."+d[0].balls;
-                        //console.log(overs);
-                        //return overs;
                         return "Overs: "+over+"."+ball;
                     }
                     overs += SHORT_FORM[d[0].BattingTeam]+": "+d[0].cumulativescore + "/"+d[0].total_wickets;
                     return overs; 
                 }
+                //slider text
                 d3.select("#overlay")
                     .selectAll("text")
                     .data(arr)
@@ -290,15 +289,13 @@ class viz{
         let brush = d3.brushX()
                         .extent([[PADDING.LEFT,LINE_CHART_HEIGHT-PADDING.BOTTOM],[LINE_CHART_WIDTH-PADDING.RIGHT,LINE_CHART_HEIGHT-20]])
                         .on("brush",function(e){
-                            //console.log("brush");
-                            //console.log(e.selection);
                             if(e.selection){
                                 const [left,right] = e.selection;
                                 let from = Math.floor(xscale.invert(left));
                                 let to = Math.floor(xscale.invert(right));
-                                //console.log(from);
-                                //console.log(to);
                                 d3.select("#over-choosen").select("text").text("SELECTED BALLS: "+from+" to "+to).attr('x',LINE_CHART_WIDTH/2-100).attr('y',LINE_CHART_HEIGHT);
+                                
+                                // update pie chart, heatmap and partnership chart according to brushed part
                                 that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                                 that.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first",from,to);
                                 that.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second",from,to);
@@ -307,15 +304,12 @@ class viz{
                             }
                         })
                         .on("end",function(e){
-                            //console.log("end");
-                            //console.log(e.selection);
                             if(e.selection){
                                 const [left,right] = e.selection;
                                 let from = Math.floor(xscale.invert(left));
                                 let to = Math.floor(xscale.invert(right));
-                                //console.log(from);
-                                //console.log(to);
                                 d3.select("#over-choosen").select("text").text("SELECTED BALLS: "+from+" to "+to).attr('x',LINE_CHART_WIDTH/2-100).attr('y',LINE_CHART_HEIGHT);
+                                // update pie chart, heatmap and partnership chart according to brushed part
                                 that.piechart_obj.updatePieChart(firstinnings_deliveries,secondinnings_deliveries,from,to);
                                 that.heatmap_obj.updateHeatMap(firstinnings_deliveries,"first",from,to);
                                 that.heatmap_obj.updateHeatMap(secondinnings_deliveries,"second",from,to);

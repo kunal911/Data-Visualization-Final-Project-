@@ -39,30 +39,26 @@ class matchSelection{
     addListener(){
         const that = this;
         this.dropdown.addEventListener("change",function(){
-            console.log(that.dropdown.value);
             if(that.dropdown.value !== "Select Team 1" && that.dropdown2.value!=="Select Team 2")
             {
-                console.log(that.dropdown.value);
-                console.log(that.dropdown2.value);
+                //getting matchID according to selected teams
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
-                console.log(matchID);
-                //that.header.createHeader(matchID);
+                
+                //creating worm graph from the matchID
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);
                 that.teamsheet.drawTable(matchID,"team2");
             }
         });
         this.dropdown2.addEventListener("change",function(){
-            console.log(that.dropdown2.value);
             if(that.dropdown.value !== "Select Team 1" && that.dropdown2.value!=="Select Team 2")
             {
                 let matchID = that.getMatchID(that.dropdown.value,that.dropdown2.value);
-                console.log(matchID);
-                //that.header.createHeader(matchID);
+                
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);   //draws worm graph for the selected match
                 that.teamsheet.drawTable(matchID,"team2");
-                //console.log(matchID.ID)
+                
             }
         });
     }
