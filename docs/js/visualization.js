@@ -8,6 +8,28 @@ const PADDING = {
 };
 const TEAM_WIDTH = 270;
 const TEAM_HEIGHT = LINE_CHART_HEIGHT;
+const COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
+        "Kolkata Knight Riders":"#552792",
+        "Mumbai Indians":"#003B7A",
+        "Royal Challengers Bangalore":"#8c0b01",
+        "Chennai Super Kings":"#f2a619",
+        "Gujarat Titans":"#ADD8E6",
+        "Lucknow Super Giants":"#81BC00",
+        "Punjab Kings" :"#808080",
+        "Rajasthan Royals":"#EA1A85",
+        "Sunrisers Hyderabad":"#ED1A37"
+        };
+const SHORT_FORM = {"Delhi Capitals": ["DC"],
+        "Kolkata Knight Riders":["KKR"],
+        "Mumbai Indians":["MI"],
+        "Royal Challengers Bangalore":["RCB"],
+        "Chennai Super Kings":["CSK"],
+        "Gujarat Titans":["GT"],
+        "Lucknow Super Giants":["LSG"],
+        "Punjab Kings" :["PBKS"],
+        "Rajasthan Royals":["RR"],
+        "Sunrisers Hyderabad":["SRH"]
+        };
 class viz{
     constructor(matchData,perBallData){
         this.matchData = matchData;
@@ -54,28 +76,6 @@ class viz{
         let wicket_deliveries = [];
         let firstinnings_deliveries = [];
         let secondinnings_deliveries = [];
-        let COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
-        "Kolkata Knight Riders":"#552792",
-        "Mumbai Indians":"#003B7A",
-        "Royal Challengers Bangalore":"#8c0b01",
-        "Chennai Super Kings":"#f2a619",
-        "Gujarat Titans":"#ADD8E6",
-        "Lucknow Super Giants":"#81BC00",
-        "Punjab Kings" :"#808080",
-        "Rajasthan Royals":"#EA1A85",
-        "Sunrisers Hyderabad":"#ED1A37"
-        };
-        let SHORT_FORM = {"Delhi Capitals": ["DC"],
-        "Kolkata Knight Riders":["KKR"],
-        "Mumbai Indians":["MI"],
-        "Royal Challengers Bangalore":["RCB"],
-        "Chennai Super Kings":["CSK"],
-        "Gujarat Titans":["GT"],
-        "Lucknow Super Giants":["LSG"],
-        "Punjab Kings" :["PBKS"],
-        "Rajasthan Royals":["RR"],
-        "Sunrisers Hyderabad":["SRH"]
-        };
         
         let extras = 0;
 
