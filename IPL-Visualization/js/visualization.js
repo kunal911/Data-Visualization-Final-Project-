@@ -61,7 +61,7 @@ class viz{
         "Chennai Super Kings":"#f2a619",
         "Gujarat Titans":"#ADD8E6",
         "Lucknow Super Giants":"#81BC00",
-        "Punjab Kings" :"#84171B",
+        "Punjab Kings" :"#808080",
         "Rajasthan Royals":"#EA1A85",
         "Sunrisers Hyderabad":"#ED1A37"
         };
