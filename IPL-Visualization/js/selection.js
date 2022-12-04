@@ -2,7 +2,7 @@
 
 //call your function in the addListener function below.
 class matchSelection{
-    constructor(matchData,perBallData){
+    constructor(matchData,perBallData,ranking){
         console.log(matchData);
         this.matchData = matchData;
         this.perBallData = perBallData;
@@ -25,15 +25,14 @@ class matchSelection{
         this.addListener();
         this.visulization = new viz(this.matchData,this.perBallData);
         this.teamsheet = new teamsheets(this.matchData);
-        
+        this.ranking = new Ranking(ranking);
     }
     getMatchID(team1,team2){
         let matches = this.matchData.filter(d=>(d.Team1 === team1 && d.Team2 ===team2)) 
         if (matches.length===0){
             matches = this.matchData.filter(d=>(d.Team1 === team2 && d.Team2 === team1));
         } 
-        // && (d.Team2 ===team2 || d.Team2 === team1)
-        console.log(matches)    
+        // && (d.Team2 ===team2 || d.Team2 === team1)    
         return matches[0].ID;
     }
     addListener(){
@@ -48,6 +47,7 @@ class matchSelection{
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);
                 that.teamsheet.drawTable(matchID,"team2");
+                that.ranking.drawRankingGraph(that.dropdown.value,that.dropdown2.value);
             }
         });
         this.dropdown2.addEventListener("change",function(){
@@ -58,6 +58,7 @@ class matchSelection{
                 that.teamsheet.drawTable(matchID,"team1");
                 that.visulization.drawWormGraph(matchID);   //draws worm graph for the selected match
                 that.teamsheet.drawTable(matchID,"team2");
+                that.ranking.drawRankingGraph(that.dropdown.value,that.dropdown2.value);
                 
             }
         });

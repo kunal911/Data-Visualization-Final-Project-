@@ -15,7 +15,8 @@ class runperover{
         //group data according to overs
         let groupByOver_1 = d3.group(firstinnings,d=>d.overs);
         let groupByOver_2 = d3.group(secondinnings,d=>d.overs)
-        
+        //console.log(groupByOver_1);
+        //console.log(groupByOver_2);
         //creating runs per over data
         let data = []
         let obj={};
@@ -23,7 +24,12 @@ class runperover{
             obj={};
             let over_1 = groupByOver_1.get(""+i);
             let over_2 = groupByOver_2.get(""+i);
-            if(over_1!==undefined && over_2!==undefined){
+            if(over_1 === undefined && over_2 === undefined){
+                obj['over'] = i+1;
+                obj['innings1_run'] = 0 
+                obj['innings2_run'] = 0
+            }
+            else if(over_1!==undefined && over_2!==undefined){
                 obj['over'] = i+1;
                 let run_1 = d3.sum(over_1,d=>Number(d.total_run))
                 let run_2 = d3.sum(over_2,d=>Number(d.total_run))
@@ -109,7 +115,7 @@ class runperover{
         //displaying rect for each innings over by over
         rect_group.selectAll("rect")
                     .data(d=>{
-                        console.log(d);
+                        //console.log(d);
                         return [{"key":"innings1","value":d['innings1_run']},{"key":"innings2","value":d['innings2_run']}]
                     })
                     .join("rect")
