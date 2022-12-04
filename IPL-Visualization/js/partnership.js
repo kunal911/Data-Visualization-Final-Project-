@@ -10,17 +10,17 @@ const startpositions = {
     1:160,
     2:460
 }
-let COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
-"Kolkata Knight Riders":"#552792",
-"Mumbai Indians":"#003B7A",
-"Royal Challengers Bangalore":"#8c0b01",
-"Chennai Super Kings":"#f2a619",
-"Gujarat Titans":"#ADD8E6",
-"Lucknow Super Giants":"#81BC00",
-"Punjab Kings" :"#84171B",
-"Rajasthan Royals":"#EA1A85",
-"Sunrisers Hyderabad":"#ED1A37"
-};
+// let COLOR_PALLETE = {"Delhi Capitals": "#6A7AB5",
+// "Kolkata Knight Riders":"#552792",
+// "Mumbai Indians":"#003B7A",
+// "Royal Challengers Bangalore":"#8c0b01",
+// "Chennai Super Kings":"#f2a619",
+// "Gujarat Titans":"#ADD8E6",
+// "Lucknow Super Giants":"#81BC00",
+// "Punjab Kings" :"#84171B",
+// "Rajasthan Royals":"#EA1A85",
+// "Sunrisers Hyderabad":"#ED1A37"
+// };
 class partnership{
     constructor(matchData,ballbyball){
         this.matchData = matchData;

@@ -1,5 +1,5 @@
 const RPO_SVGWIDTH = 1300;
-const RPO_SVGHEIGHT = 600;
+const RPO_SVGHEIGHT = 550;
 class runperover{
     constructor(){
         d3.select(".content").append("svg").attr("width",RPO_SVGWIDTH).attr("height",RPO_SVGHEIGHT).attr("id","runsperover");
@@ -10,6 +10,7 @@ class runperover{
         this.y = d3.select("#rpo-group").append("g").attr("id","y-axis").attr("transform","translate(0,0)")
         this.bar_group = d3.select("#rpo-group").append("g").attr("id","bar-groups").attr("transform","translate(0,0)");
         this.legend_group = d3.select("#runsperover").append("g").attr("id","legend");
+        d3.select("#runsperover").append("g").attr("id","rpo-labels");
     }
     draw_rpo(firstinnings,secondinnings){
         //group data according to overs
@@ -73,7 +74,7 @@ class runperover{
         //x-axis
         let xscale = d3.scaleBand()
                         .domain(groups)
-                        .range([0,1100])
+                        .range([0,RPO_SVGWIDTH-200])
                         .padding([0.2]);
         let xaxis = d3.axisBottom().scale(xscale);                
         this.x.call(xaxis);
@@ -82,10 +83,26 @@ class runperover{
         let max_runs = d3.max([d3.max(data,d=>d['innings1_run']),d3.max(data,d=>d['innings2_run'])]);
         let yscale = d3.scaleLinear()
                         .domain([max_runs,0])
-                        .range([0,400]);
+                        .range([0,RPO_SVGHEIGHT-150]);
         let yaxis = d3.axisLeft().scale(yscale);
         this.y.call(yaxis);
+
+         //xaxis label 
+         d3.select("#rpo-labels")
+         .append("text")
+         .attr("text-anchor","end")
+         .attr('x',RPO_SVGWIDTH/2)
+         .attr('y',RPO_SVGHEIGHT-70)
+         .text("Overs");   
         
+     //yaxis label
+     d3.select("#rpo-labels")
+         .append("text")
+         .attr("text-anchor","end")
+         .attr('x',-RPO_SVGHEIGHT/3)
+         .attr('y',90)
+         .attr("transform","rotate(-90)")
+         .text("Runs");
         //subgroup scales
         let subgroup_scale = d3.scaleBand()
                                 .domain(subgroups)
