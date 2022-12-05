@@ -2,8 +2,8 @@
 ## Semester Project for the University of Utah Data Visualization for Data Science course
 ##### Team Members: Harsh Mahajan(u1413898), Dhruvil Shah(u1420007), Kunal Manjare(u1419704)
 ##### Website: https://kunal911.github.io/Data-Visualization-Final-Project-/
-##### Screencast:
-##### Process Book:
+##### Screencast: [YouTube video](https://www.youtube.com/watch?v=C3hAIaQq3Ns)
+##### Process Book: [Process Book](https://kunal911.github.io/Data-Visualization-Final-Project-/pdf/processbook.pdf)
 ##### Project Guide: Tripti Agarwal
 ##### Overview: This project is meant for people who would like to dive deep into the archives of Indian Premier League(IPL) and use the data to create their own hypothesis. We are attempting to do this by creating a comprehensive dashboard while following the design guidelines taught to us.
 ##### Data: All the raw data which we used is in the docs/Data folder. We used Python libraries such as pandas, numpy, json for data scraping,manipulation and preprocessing. The code for data manipulation is available in the "Dataset Manipulation" folder.
