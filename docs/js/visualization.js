@@ -326,6 +326,7 @@ class viz{
             d3.select("#worm-brush").call(brush.move,null);
             that.drawWormGraph(matchID);
             d3.select("#over-choosen").selectAll("*").remove();
+            d3.select("#over-choosen").append("text");
         })
     }
 }
