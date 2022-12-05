@@ -6,4 +6,6 @@
 ##### Data: All the raw data which we used is in the docs/Data folder. We used Python libraries such as pandas, numpy, json for Data manipulation and Data Preprocessing.
 ##### Code: Majority of the code will be found in docs/js folder. We have used d3.javascript for our visualization.
 ##### Website: https://kunal911.github.io/Data-Visualization-Final-Project-/
+##### Screencast:
+##### Process Book:
 ##### Overview of features: Select any two teams of your choice to see their performance for the season 2022. The brush available on the x-axis is draggable.
